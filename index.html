@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="bn">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>1xplorE | Advanced Interface</title>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=JetBrains+Mono:wght@300&display=swap');
+
+    * {
+      margin: 0; padding: 0; box-sizing: border-box;
+      scrollbar-width: thin;
+      scrollbar-color: #00ff66 #000;
+    }
+
+    body {
+      background: #000;
+      color: #00ff66;
+      font-family: 'JetBrains Mono', monospace;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      overflow-x: hidden;
+      background-image: 
+        radial-gradient(circle at 50% 50%, rgba(0, 50, 0, 0.2) 0%, transparent 80%),
+        linear-gradient(0deg, rgba(0,0,0,1) 0%, rgba(0,20,0,0.8) 100%);
+    }
+
+    /* ---- Animated Background Layer ---- */
+    #canvas-particles {
+      position: fixed;
+      top: 0; left: 0;
+      z-index: -1;
+    }
+
+    /* ---- Cyberpunk Scanline Effect ---- */
+    .scanlines {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+      z-index: 10;
+      background-size: 100% 4px, 4px 100%;
+      pointer-events: none;
+    }
+
+    .wrapper {
+      width: 100%;
+      max-width: 1200px;
+      padding: 60px 20px;
+      position: relative;
+      z-index: 5;
+    }
+
+    /* ---- Glitch Title Header ---- */
+    .header {
+      text-align: center;
+      margin-bottom: 80px;
+    }
+
+    .top {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 5rem;
+      font-weight: 900;
+      letter-spacing: 20px;
+      color: #fff;
+      text-transform: uppercase;
+      position: relative;
+      display: inline-block;
+      text-shadow: 0.05em 0 0 #00ffcc, -0.025em -0.05em 0 #ff00ff, 0.025em 0.05em 0 #ffcc00;
+      animation: glitch 1.5s infinite;
+    }
+
+    @keyframes glitch {
+      0% { text-shadow: 0.05em 0 0 #00ffcc, -0.05em -0.025em 0 #ff00ff, 0.025em 0.05em 0 #ffcc00; }
+      14% { text-shadow: 0.05em 0 0 #00ffcc, -0.05em -0.025em 0 #ff00ff, 0.025em 0.05em 0 #ffcc00; }
+      15% { text-shadow: -0.05em -0.025em 0 #00ffcc, 0.025em 0.025em 0 #ff00ff, -0.05em -0.05em 0 #ffcc00; }
+      49% { text-shadow: -0.05em -0.025em 0 #00ffcc, 0.025em 0.025em 0 #ff00ff, -0.05em -0.05em 0 #ffcc00; }
+      50% { text-shadow: 0.025em 0.05em 0 #00ffcc, 0.05em 0 0 #ff00ff, 0 -0.05em 0 #ffcc00; }
+      99% { text-shadow: 0.025em 0.05em 0 #00ffcc, 0.05em 0 0 #ff00ff, 0 -0.05em 0 #ffcc00; }
+      100% { text-shadow: -0.025em 0 0 #00ffcc, -0.025em -0.025em 0 #ff00ff, -0.025em -0.05em 0 #ffcc00; }
+    }
+
+    .subtitle {
+      color: #00ff66;
+      letter-spacing: 5px;
+      font-size: 1rem;
+      opacity: 0.8;
+      margin-top: 10px;
+    }
+
+    /* ---- Grid Layout ---- */
+    .content-grid {
+      display: grid;
+      gap: 30px;
+    }
+
+    @media (max-width: 600px) { .content-grid { grid-template-columns: 1fr; } .top { font-size: 2.5rem; letter-spacing: 10px; } }
+    @media (min-width: 601px) and (max-width: 1000px) { .content-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (min-width: 1001px) { .content-grid { grid-template-columns: repeat(3, 1fr); } }
+
+    /* ---- Tech Card Design ---- */
+    .main-card {
+      background: rgba(0, 15, 0, 0.6);
+      border: 1px solid rgba(0, 255, 102, 0.3);
+      padding: 30px;
+      text-decoration: none;
+      color: #00ff66;
+      border-radius: 4px;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      backdrop-filter: blur(10px);
+    }
+
+    .main-card::before {
+      content: "";
+      position: absolute;
+      top: 0; left: -100%;
+      width: 100%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(0, 255, 102, 0.2), transparent);
+      transition: 0.5s;
+    }
+
+    .main-card:hover {
+      border-color: #00ff66;
+      box-shadow: 0 0 30px rgba(0, 255, 102, 0.4);
+      transform: translateY(-10px);
+      background: rgba(0, 40, 0, 0.8);
+    }
+
+    .main-card:hover::before {
+      left: 100%;
+    }
+
+    .card-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.3rem;
+      margin-bottom: 20px;
+      font-weight: bold;
+      letter-spacing: 2px;
+      color: #fff;
+    }
+
+    .card-btn {
+      display: inline-block;
+      padding: 10px 20px;
+      border: 1px solid #00ff66;
+      font-size: 0.8rem;
+      font-weight: bold;
+      text-transform: uppercase;
+      transition: 0.3s;
+      background: rgba(0, 255, 102, 0.05);
+    }
+
+    .main-card:hover .card-btn {
+      background: #00ff66;
+      color: #000;
+    }
+
+    .corner {
+      position: absolute;
+      width: 15px; height: 15px;
+      border: 2px solid #00ff66;
+    }
+    .top-left { top: 0; left: 0; border-right: 0; border-bottom: 0; }
+    .bottom-right { bottom: 0; right: 0; border-left: 0; border-top: 0; }
+
+  </style>
+</head>
+
+<body>
+
+  <div class="scanlines"></div>
+  <canvas id="canvas-particles"></canvas>
+
+  <div class="wrapper">
+    <div class="header">
+      <div class="top">1xplorer</div>
+      <div class="subtitle">1x Hacking Simulation</div>
+    </div>
+
+    <div class="content-grid" id="mainContentGrid"></div>
+  </div>
+
+  <script>
+    // --- Floating Matrix Particles ---
+    const canvas = document.getElementById('canvas-particles');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    let particles = [];
+    class Particle {
+      constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.size = Math.random() * 2 + 1;
+        this.speedX = Math.random() * 1 - 0.5;
+        this.speedY = Math.random() * 1 - 0.5;
+      }
+      update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+        if (this.x > canvas.width) this.x = 0;
+        if (this.x < 0) this.x = canvas.width;
+        if (this.y > canvas.height) this.y = 0;
+        if (this.y < 0) this.y = canvas.height;
+      }
+      draw() {
+        ctx.fillStyle = 'rgba(0, 255, 102, 0.5)';
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    function init() {
+      for (let i = 0; i < 100; i++) particles.push(new Particle());
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(p => { p.update(); p.draw(); });
+      requestAnimationFrame(animate);
+    }
+    init(); animate();
+
+    // --- Dynamic Card Loader ---
+    function loadMainPage() {
+      const pages = [
+        'AppleHack.html','AppleHackV2.html','Aviator.html','CrashHack.html',
+        'CrashHackV2.html','CrashHackV3.html','Goal.html','MundialGame.html',
+        'SwampLandGame.html','Thimbles.html','ZombieHack.html'
+      ];
+      const grid = document.getElementById('mainContentGrid');
+      
+      pages.forEach(file => {
+        const name = file.replace(".html", "").toUpperCase();
+        const card = document.createElement('a');
+        card.href = file;
+        card.target = '_blank';
+        card.className = 'main-card';
+        card.innerHTML = `
+          <div class="corner top-left"></div>
+          <div class="corner bottom-right"></div>
+          <div class="card-title">${name}</div>
+          <div class="card-btn">Launch Bypass</div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+    loadMainPage();
+
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+  </script>
+
+</body>
+</html>
