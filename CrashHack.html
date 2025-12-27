@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CrashHack</title>
+
+<style>
+    * {
+        margin: 0; padding: 0; box-sizing: border-box;
+    }
+
+    body, html {
+        width: 100%;
+        height: 100%;
+        background: #000;
+        overflow: hidden;
+        font-family: "Courier New", monospace;
+    }
+
+    /* ======= FULLSCREEN HACKER OVERLAY ======= */
+    #fullscreen-hack {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.90);
+        backdrop-filter: blur(4px);
+        border: 1px solid rgba(0, 255, 0, 0.15);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 999998;
+        color: #b8ff8a;
+        text-shadow: 0 0 8px rgba(0,255,0,0.6);
+    }
+
+    /* glowing frame */
+    #fullscreen-hack::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border: 2px solid rgba(0,255,0,0.15);
+        box-shadow: 0 0 40px rgba(0,255,0,0.15);
+        pointer-events: none;
+    }
+
+    /* animated code rain bg */
+    .code-bg {
+        position: absolute;
+        inset: 0;
+        opacity: 0.25;
+        background-image: repeating-linear-gradient(
+            to bottom,
+            rgba(0,255,0,0.06) 0px,
+            rgba(0,255,0,0.06) 1px,
+            transparent 1px,
+            transparent 3px
+        );
+        animation: rain 6s linear infinite;
+    }
+
+    @keyframes rain {
+        0%   { background-position: 0 0; }
+        100% { background-position: 0 200px; }
+    }
+
+    /* ======= CENTER PANEL ======= */
+    #panel {
+        z-index: 999999;
+        background: rgba(0,0,0,0.55);
+        padding: 30px;
+        border-radius: 16px;
+        border: 1px solid rgba(0,255,0,0.2);
+        box-shadow: 0 0 20px rgba(0,255,0,0.25);
+        width: 85%;
+        max-width: 450px;
+        text-align: center;
+    }
+
+    #panel button {
+        width: 100%;
+        background: rgba(0,255,0,0.15);
+        border: 1px solid rgba(0,255,0,0.5);
+        padding: 14px;
+        font-size: 18px;
+        border-radius: 10px;
+        color: #c2ffb0;
+        cursor: pointer;
+        text-shadow: 0 0 6px rgba(0,255,0,0.8);
+        box-shadow: 0 0 12px rgba(0,255,0,0.2);
+    }
+
+    #panel button:hover {
+        background: rgba(0,255,0,0.35);
+        box-shadow: 0 0 25px rgba(0,255,0,0.55);
+    }
+
+    #panel .msg {
+        margin-top: 20px;
+        padding: 12px;
+        background: rgba(0,0,0,0.3);
+        border: 1px solid rgba(0,255,0,0.25);
+        border-radius: 8px;
+        color: #a6ff8a;
+        font-size: 16px;
+        box-shadow: inset 0 0 10px rgba(0,255,0,0.15);
+    }
+</style>
+</head>
+<body>
+
+<!-- ========= Fullscreen hacker UI wrapper ========= -->
+<div id="fullscreen-hack">
+    <div class="code-bg"></div>
+
+    <div id="panel">
+        <button id="mainBtn">Start Hack</button>
+        <div class="msg" id="msgBox">HackRazz</div>
+    </div>
+</div>
+
+
+<!-- ========= ORIGINAL JS (kept 100% same logic) ========= -->
+<script>
+// زر Start/Stop
+const clickButton = document.getElementById("mainBtn");
+const messageBox = document.getElementById("msgBox");
+
+// حالة التشغيل
+let isRunning = false;
+let timeoutId = null;
+
+function generateRandomCrashX() {
+  return parseFloat((Math.random() * (2.00 - 1.10) + 1.10).toFixed(2));
+}
+
+function getDelayFromX(x) {
+  return Math.min(Math.floor(2000 * Math.log(x)), 1500);
+}
+
+function startSimulation() {
+  if (!isRunning) return;
+
+  const crashX = generateRandomCrashX();
+  const delay = getDelayFromX(crashX);
+
+  messageBox.innerText = `🚀 Started at 1.00x`;
+
+  timeoutId = setTimeout(() => {
+    messageBox.innerText = `💥 Collect — crash at ${crashX.toFixed(2)}x`;
+    isRunning = false;
+    clickButton.innerText = "Start Hack";
+  }, delay);
+}
+
+clickButton.onclick = () => {
+  if (isRunning) {
+    isRunning = false;
+    clearTimeout(timeoutId);
+    clickButton.innerText = "Start Hack";
+    messageBox.innerText = "Stopped.";
+  } else {
+    isRunning = true;
+    clickButton.innerText = "Stop";
+    startSimulation();
+  }
+};
+</script>
+
+</body>
+</html>

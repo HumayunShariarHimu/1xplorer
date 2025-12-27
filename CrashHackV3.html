@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="bn">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Crash Hack</title>
+<style>
+  :root {
+    --bg1:#000428;
+    --bg2:#004e92;
+    --card-bg:rgba(255,255,255,0.12);
+    --text:#e9f3ff;
+    --accent:#00eaff;
+    --accent2:#4facfe;
+    --button1:#43cea2;
+    --button2:#185a9d;
+    font-family:"Segoe UI", Roboto, "Noto Sans Bengali", sans-serif;
+  }
+
+  html,body {
+    margin:0; height:100%;
+    display:flex; justify-content:center; align-items:center;
+    background:linear-gradient(135deg,var(--bg1),var(--bg2));
+    color:var(--text);
+    overflow:hidden;
+  }
+
+  .card {
+    width:380px; max-width:92%;
+    background:var(--card-bg);
+    backdrop-filter:blur(25px);
+    border-radius:20px;
+    box-shadow:0 0 35px rgba(0,0,0,0.4), 0 0 20px rgba(0,234,255,0.15);
+    padding:30px;
+    text-align:center;
+    border:1px solid rgba(255,255,255,0.15);
+    position:relative;
+  }
+
+  .title {
+    font-size:38px;
+    font-weight:800;
+    letter-spacing:1.5px;
+    color:var(--accent);
+    text-shadow:0 0 12px rgba(0,234,255,0.7);
+  }
+
+  .plane-container {
+    display:flex; justify-content:center; margin-top:10px;
+  }
+  .plane {
+    width:100px;
+    animation:fly 4s ease-in-out infinite;
+  }
+  @keyframes fly {
+    0%,100%{transform:translateY(0) rotate(-3deg);}
+    50%{transform:translateY(-10px) rotate(4deg);}
+  }
+
+  .number {
+    font-size:50px; font-weight:700;
+    color:var(--accent2);
+    margin:22px 0;
+    text-shadow:0 0 12px rgba(79,172,254,0.5);
+  }
+
+  .controls {
+    display:flex; flex-direction:column; gap:12px;
+  }
+
+  .id-input {
+    padding:13px;
+    border-radius:10px;
+    border:none;
+    width:100%;
+    font-size:14px;
+    text-align:center;
+    background:rgba(255,255,255,0.15);
+    color:#fff;
+  }
+
+  .btn {
+    padding:14px;
+    border:none;
+    border-radius:12px;
+    font-weight:700;
+    font-size:15px;
+    cursor:pointer;
+    transition:0.25s all;
+  }
+
+  .btn-show {
+    background:linear-gradient(90deg,var(--button1),var(--accent2));
+    color:#fff;
+    box-shadow:0 0 12px rgba(0,234,255,0.4);
+  }
+  .btn-show:hover {
+    transform:scale(1.05);
+    box-shadow:0 0 18px rgba(0,234,255,0.6);
+  }
+
+  .btn-reset {
+    background:linear-gradient(90deg,#141E30,#243B55);
+    color:#d8e5ff;
+  }
+  .btn-reset:hover {
+    transform:scale(1.05);
+    box-shadow:0 0 15px rgba(255,255,255,0.2);
+  }
+
+  .hint {
+    margin-top:10px;
+    font-size:12px;
+    color:#b8e8ff;
+  }
+
+  .waiting-message {
+    font-size:12px;
+    color:var(--accent);
+    display:none;
+  }
+
+  .popup-message {
+    position:fixed;
+    top:30px; right:30px;
+    background:linear-gradient(135deg,#00eaff,#4facfe);
+    color:#001833;
+    font-weight:600;
+    padding:10px 14px;
+    border-radius:10px;
+    box-shadow:0 0 20px rgba(0,234,255,0.4);
+    display:none;
+    z-index:9999;
+  }
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="title">Crash Hack</div>
+    <div class="plane-container">
+      <img class="plane" src="https://i.imgur.com/JcDmdZZ.png" alt="Flying Plane">
+    </div>
+
+    <div id="display" class="number">0.00x</div>
+
+    <div class="controls">
+      <input id="gameId" class="id-input" type="text" placeholder="আপনার গেমিং আইডি দিন (আবশ্যিক)">
+      <button id="showBtn" class="btn btn-show">Hack Signal</button>
+      <span id="waitingMessage" class="waiting-message">অপেক্ষা করুন...</span>
+      <button id="resetBtn" class="btn btn-reset">Reset Signal</button>
+      <div class="hint">প্রথমে গেমিং আইডি দিন, তারপর Hack Signal দেখান।</div>
+    </div>
+  </div>
+
+  <div id="popupMessage" class="popup-message"></div>
+
+<script>
+  const display = document.getElementById('display');
+  const showBtn = document.getElementById('showBtn');
+  const resetBtn = document.getElementById('resetBtn');
+  const gameIdInput = document.getElementById('gameId');
+  const waitingMessage = document.getElementById('waitingMessage');
+  const popup = document.getElementById('popupMessage');
+  let lastClickTime = 0;
+
+  const WINDOW_MS = 12 * 60 * 60 * 1000; // 12 hours
+  const MAX_ALLOWED = 3;
+
+  function getRecordsForId(id) {
+    try {
+      const raw = localStorage.getItem('clickRecords_' + id);
+      if (!raw) return [];
+      const arr = JSON.parse(raw);
+      return Array.isArray(arr) ? arr.map(Number).filter(n => !isNaN(n)) : [];
+    } catch {
+      return [];
+    }
+  }
+  function saveRecordsForId(id, arr) {
+    localStorage.setItem('clickRecords_' + id, JSON.stringify(arr));
+  }
+  function pruneOld(records) {
+    const now = Date.now();
+    return records.filter(ts => (now - ts) <= WINDOW_MS);
+  }
+  function canClickNow(id) {
+    const records = pruneOld(getRecordsForId(id));
+    return { allowed: records.length < MAX_ALLOWED, records };
+  }
+  function recordClick(id) {
+    const now = Date.now();
+    const records = pruneOld(getRecordsForId(id));
+    records.push(now);
+    saveRecordsForId(id, records);
+  }
+  function showPopup(text, duration=3000) {
+    popup.textContent = text;
+    popup.style.display = 'block';
+    clearTimeout(popup._hideTimeout);
+    popup._hideTimeout = setTimeout(()=>popup.style.display='none', duration);
+  }
+
+  function randomMultiplier() {
+    const branchRand = Math.random();
+    let min, max;
+    if (branchRand <= 0.7) {min = 1.20; max = 2.00;}
+    else {min = 1.00; max = 1.20;}
+    let value = Math.random()*(max-min)+min;
+    value = Math.round(value*100)/100;
+    return value.toFixed(2)+'x';
+  }
+
+  showBtn.addEventListener('click', () => {
+    const id = (gameIdInput.value || '').trim();
+    if (!id) { alert("গেমিং আইডি দিতে হবে!"); return; }
+
+    const now = Date.now();
+    if (now - lastClickTime < 3000) {
+      waitingMessage.style.display = 'inline';
+      setTimeout(()=>waitingMessage.style.display='none', 3000);
+      return;
+    }
+    lastClickTime = now;
+
+    const check = canClickNow(id);
+    if (!check.allowed) {
+      showPopup("দয়া করে আবার 12 ঘণ্টা পরে চেষ্টা করুন", 4000);
+      return;
+    }
+    recordClick(id);
+    display.textContent = randomMultiplier();
+  });
+
+  resetBtn.addEventListener('click', ()=>display.textContent='0.00x');
+</script>
+</body>
+</html>

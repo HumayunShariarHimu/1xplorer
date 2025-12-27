@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MundialGameHack</title>
+<style>
+body {
+  font-family: "Noto Sans Bengali", Arial, sans-serif;
+  background: linear-gradient(135deg, #141E30, #243B55);
+  color: #fff;
+  text-align: center;
+  margin: 0;
+  padding: 20px;
+}
+
+.container {
+  max-width: 500px;
+  margin: 0 auto;
+  background: rgba(255,255,255,0.06);
+  padding: 25px 20px;
+  border-radius: 15px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+}
+
+.row {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin: 12px 0;
+}
+
+.slot {
+  width: 100px;
+  height: 75px;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #111;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease;
+}
+
+.slot img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform .18s ease, box-shadow .18s;
+}
+
+.slot.pop img {
+  transform: scale(1.06);
+  box-shadow: 0 8px 18px rgba(0,0,0,0.6);
+}
+
+.controls {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 15px;
+}
+
+input {
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 0;
+  outline: none;
+  width: 220px;
+  text-align: center;
+}
+
+button {
+  padding: 10px 16px;
+  border-radius: 10px;
+  border: 0;
+  cursor: pointer;
+  font-weight: 700;
+  transition: all 0.3s ease;
+}
+
+.start {
+  background: linear-gradient(90deg,#ff7e5f,#feb47b);
+  color: #fff;
+}
+
+.start:hover {
+  transform: scale(1.05);
+}
+
+.reset {
+  background: linear-gradient(90deg,#56ccf2,#2f80ed);
+  color: #fff;
+}
+
+.reset:hover {
+  transform: scale(1.05);
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <!-- Slots Rows -->
+  <div class="row" id="row1">
+    <div class="slot"><img src="https://i.imgur.com/LGRdPMn.jpeg" alt="slot"></div>
+    <div class="slot"><img src="https://i.imgur.com/LGRdPMn.jpeg" alt="slot"></div>
+    <div class="slot"><img src="https://i.imgur.com/LGRdPMn.jpeg" alt="slot"></div>
+    <div class="slot"><img src="https://i.imgur.com/LGRdPMn.jpeg" alt="slot"></div>
+  </div>
+
+  <div class="row" id="row2">
+    <div class="slot"><img src="https://i.imgur.com/LGRdPMn.jpeg" alt="slot"></div>
+    <div class="slot"><img src="https://i.imgur.com/LGRdPMn.jpeg" alt="slot"></div>
+    <div class="slot"><img src="https://i.imgur.com/LGRdPMn.jpeg" alt="slot"></div>
+    <div class="slot"><img src="https://i.imgur.com/LGRdPMn.jpeg" alt="slot"></div>
+  </div>
+
+  <!-- Controls -->
+  <div class="controls">
+    <input type="text" id="gameId" placeholder="আপনার অ্যাকাউন্ট নাম্বার দিন">
+    <button class="start" id="startBtn">Start</button>
+    <button class="reset" id="resetBtn">Reset</button>
+  </div>
+</div>
+
+<script>
+(() => {
+  const NORMAL = "https://i.imgur.com/LGRdPMn.jpeg";
+  const SPECIAL = "https://i.imgur.com/IiSlSOT.jpeg";
+
+  const startBtn = document.getElementById("startBtn");
+  const resetBtn = document.getElementById("resetBtn");
+  const gameId = document.getElementById("gameId");
+  const row1 = document.getElementById("row1");
+  const row2 = document.getElementById("row2");
+
+  function setAllNormal(){
+    document.querySelectorAll(".slot").forEach(s => {
+      s.classList.remove("pop");
+      const img = s.querySelector("img");
+      if(img) img.src = NORMAL;
+    });
+  }
+
+  function revealSpecial(rowEl){
+    const slots = Array.from(rowEl.querySelectorAll(".slot"));
+    const idx = Math.floor(Math.random()*slots.length);
+    slots.forEach((s,i)=>{
+      const img = s.querySelector("img");
+      img.src = (i===idx)?SPECIAL:NORMAL;
+      s.classList.toggle("pop", i===idx);
+    });
+  }
+
+  startBtn.addEventListener("click",()=>{
+    const id = (gameId.value||"").trim();
+    if(!id){
+      gameId.style.boxShadow = "0 0 0 3px rgba(255,80,90,0.18)";
+      setTimeout(()=>gameId.style.boxShadow="",1200);
+      return;
+    }
+    revealSpecial(row1);
+    revealSpecial(row2);
+  });
+
+  resetBtn.addEventListener("click",()=>{ setAllNormal(); });
+  setAllNormal();
+})();
+</script>
+</body>
+</html>

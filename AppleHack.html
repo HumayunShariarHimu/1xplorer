@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PariPulse Apple of Fortune Hack</title>
+<style>
+  body {
+    background: linear-gradient(135deg, #001f3f, #0b0c10);
+    color: #fff;
+    font-family: Arial, sans-serif;
+    text-align: center;
+    padding: 20px;
+  }
+
+  h1 {
+    color: #00ffcc;
+    text-shadow: 0 0 15px #00ffcc;
+    margin-bottom: 20px;
+    font-size: 24px;
+  }
+
+  .game-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .row {
+    display: flex;
+    gap: 10px;
+  }
+
+  .icon {
+    width: 65px;
+    height: 65px;
+    border-radius: 50%;
+    border: 3px solid #fff;
+    padding: 5px;
+    background-color: #111;
+    box-shadow: 0 0 10px red, 0 0 15px blue, 0 0 20px green;
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+
+  .icon:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 25px #ff00ff, 0 0 40px #00ffff;
+  }
+
+  .controls {
+    margin-top: 25px;
+  }
+
+  input {
+    padding: 10px;
+    width: 220px;
+    font-size: 16px;
+    border-radius: 8px;
+    border: none;
+    text-align: center;
+    margin-bottom: 10px;
+  }
+
+  button {
+    padding: 10px 25px;
+    margin: 5px;
+    font-size: 16px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    color: white;
+    background: linear-gradient(45deg, #00b4d8, #0077b6);
+    transition: 0.3s;
+  }
+
+  button:hover {
+    background: linear-gradient(45deg, #0077b6, #00b4d8);
+    transform: scale(1.05);
+  }
+
+  @media (max-width: 480px) {
+    .icon {
+      width: 55px;
+      height: 55px;
+    }
+    h1 {
+      font-size: 20px;
+    }
+    button {
+      font-size: 14px;
+      padding: 8px 18px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<h1></h1>
+
+<div class="game-container" id="game">
+  <div class="row" id="row1"></div>
+  <div class="row" id="row2"></div>
+  <div class="row" id="row3"></div>
+  <div class="row" id="row4"></div>
+</div>
+
+<div class="controls">
+  <input type="text" id="gameId" placeholder="Enter Game ID (optional)">
+  <br>
+  <button onclick="startGame()">Start</button>
+  <button onclick="resetGame()">Reset</button>
+</div>
+
+<script>
+  const arrowImg = "https://i.imgur.com/FZQt3uP.jpeg";
+  const appleImg = "https://i.imgur.com/Rjq6hF6.jpeg";
+  const rows = [
+    document.getElementById("row1"),
+    document.getElementById("row2"),
+    document.getElementById("row3"),
+    document.getElementById("row4")
+  ];
+
+  function initializeGame() {
+    rows.forEach(row => {
+      row.innerHTML = "";
+      for (let i = 0; i < 5; i++) {
+        const img = document.createElement("img");
+        img.src = arrowImg;
+        img.className = "icon";
+        row.appendChild(img);
+      }
+    });
+  }
+
+  function startGame() {
+    rows.forEach(row => {
+      row.innerHTML = "";
+      const applePosition = Math.floor(Math.random() * 5);
+      for (let i = 0; i < 5; i++) {
+        const img = document.createElement("img");
+        img.src = (i === applePosition) ? appleImg : arrowImg;
+        img.className = "icon";
+        row.appendChild(img);
+      }
+    });
+  }
+
+  function resetGame() {
+    initializeGame();
+  }
+
+  initializeGame();
+</script>
+
+</body>
+</html>

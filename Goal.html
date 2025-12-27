@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Goal/No-Goal</title>
+<style>
+    body {
+        font-family: 'Segoe UI', Tahoma, sans-serif;
+        background: linear-gradient(135deg, #ffe6f0, #fff0f5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+    }
+
+    .container {
+        background: #fff0f5;
+        border-radius: 25px;
+        padding: 40px 35px;
+        border: 4px solid #ff66b2;
+        box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 25px;
+        width: 350px;
+        max-width: 90%;
+    }
+
+    .container img {
+        width: 250px;
+        border-radius: 15px;
+        border: 4px solid #ff66b2;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+        transition: transform 0.3s;
+    }
+
+    .container img:hover {
+        transform: scale(1.05);
+    }
+
+    input {
+        width: 100%;
+        padding: 12px;
+        font-size: 16px;
+        border-radius: 12px;
+        border: 2px solid #ff66b2;
+        text-align: center;
+        transition: 0.3s all;
+    }
+
+    input:focus {
+        outline: none;
+        border-color: #e05599;
+        box-shadow: 0 0 10px rgba(224,85,153,0.5);
+    }
+
+    .result-box {
+        width: 100%;
+        height: 100px;
+        background: #ffffff;
+        border-radius: 15px;
+        border: 3px solid #ff66b2;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 32px;
+        font-weight: bold;
+        color: #333;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        transition: all 0.5s ease;
+    }
+
+    .buttons {
+        display: flex;
+        gap: 20px;
+        width: 100%;
+        justify-content: center;
+    }
+
+    button {
+        flex: 1;
+        padding: 15px 0;
+        font-size: 18px;
+        font-weight: bold;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        transition: all 0.3s ease;
+    }
+
+    button#hack {
+        background: linear-gradient(90deg, #ff66b2, #e05599);
+        color: #fff;
+    }
+
+    button#hack:hover {
+        transform: scale(1.05);
+        box-shadow: 0 8px 20px rgba(224,85,153,0.4);
+    }
+
+    button#reset {
+        background: linear-gradient(90deg, #ffcc00, #e6b800);
+        color: #333;
+    }
+
+    button#reset:hover {
+        transform: scale(1.05);
+        box-shadow: 0 8px 20px rgba(230,184,0,0.4);
+    }
+</style>
+</head>
+<body>
+
+<div class="container">
+    <img src="https://i.imgur.com/o8qpH3S.jpeg" alt="Football">
+    
+    <input type="text" id="gameId" placeholder="আপনার গেমিং আইডি দিন।">
+    
+    <div class="result-box" id="result">Result</div>
+    
+    <div class="buttons">
+        <button id="hack">Hack</button>
+        <button id="reset">Reset</button>
+    </div>
+</div>
+
+<script>
+    const resultBox = document.getElementById('result');
+    const hackBtn = document.getElementById('hack');
+    const resetBtn = document.getElementById('reset');
+    const gameIdInput = document.getElementById('gameId');
+
+    hackBtn.addEventListener('click', () => {
+        const gameId = gameIdInput.value.trim();
+        if(!gameId){
+            alert("দয়া করে আপনার গেমিং আইডি লিখুন।");
+            return;
+        }
+
+        const outcomes = ['Goal', 'No Goal'];
+        const randomIndex = Math.floor(Math.random() * outcomes.length);
+        const outcome = outcomes[randomIndex];
+        resultBox.textContent = outcome;
+
+        if(outcome === 'Goal'){
+            resultBox.style.background = 'linear-gradient(135deg, #d4edda, #a8e6a1)';
+            resultBox.style.color = '#155724';
+            resultBox.style.transform = 'scale(1.05)';
+        } else {
+            resultBox.style.background = 'linear-gradient(135deg, #f8d7da, #f5a1a1)';
+            resultBox.style.color = '#721c24';
+            resultBox.style.transform = 'scale(1.05)';
+        }
+
+        setTimeout(() => {
+            resultBox.style.transform = 'scale(1)';
+        }, 300);
+    });
+
+    resetBtn.addEventListener('click', () => {
+        resultBox.textContent = 'ফলাফল';
+        resultBox.style.background = '#ffffff';
+        resultBox.style.color = '#333';
+        resultBox.style.transform = 'scale(1)';
+        gameIdInput.value = "";
+    });
+</script>
+
+</body>
+</html>

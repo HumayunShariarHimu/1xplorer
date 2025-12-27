@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thimbles Game Hack</title>
+<style>
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #ff9a9e, #fad0c4, #a18cd1, #fbc2eb);
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    position: relative;
+    overflow: hidden;
+  }
+
+  @keyframes gradientBG {
+    0% {background-position:0% 50%;}
+    50% {background-position:100% 50%;}
+    100% {background-position:0% 50%;}
+  }
+
+  #hackContainer {
+    padding: 25px 20px;
+    border: 5px solid #f39c12;
+    background: #ffeaa7;
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: 0 0 30px rgba(0,0,0,0.3);
+    z-index: 2;
+  }
+
+  #positions img {
+    width: 80px;
+    margin: 0 10px 30px 10px;
+    display: inline-block;
+    image-rendering: pixelated;
+    transition: transform 0.2s ease;
+  }
+
+  #positions img.active {
+    transform: scale(1.2);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+  }
+
+  #hackButton {
+    padding: 12px 28px;
+    font-size: 16px;
+    font-weight: bold;
+    background-color: #e84393;
+    color: #fff;
+    border: 3px solid #d63031;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+
+  #hackButton:hover {
+    background-color: #d63077;
+  }
+
+  #gamingId {
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 8px;
+    border: 2px solid #d63031;
+    margin-bottom: 15px;
+    text-align: center;
+    width: 80%;
+  }
+</style>
+</head>
+<body>
+<div id="hackContainer">
+    <h2>Thimbles Game Hack</h2>
+    <input type="text" id="gamingId" placeholder="আপনার গেমিং আইডি দিন">
+    <div id="positions">
+        <img src="https://i.ibb.co/p625B8HR/mask3.png" alt="Position 1">
+        <img src="https://i.ibb.co/p625B8HR/mask3.png" alt="Position 2">
+        <img src="https://i.ibb.co/p625B8HR/mask3.png" alt="Position 3">
+    </div>
+    <button id="hackButton">☠️ HACK ☠️</button>
+</div>
+
+<script>
+(function () {
+    const defaultImg = 'https://i.ibb.co/p625B8HR/mask3.png';
+    const altImg = 'https://i.ibb.co/ThnjhkS/Face-mask.png';
+    const images = document.querySelectorAll('#positions img');
+    const hackButton = document.getElementById('hackButton');
+    const gamingIdInput = document.getElementById('gamingId');
+
+    hackButton.onclick = () => {
+        const gamingId = gamingIdInput.value.trim();
+        if (!gamingId) {
+            alert("দয়া করে আপনার গেমিং আইডি দিন!");
+            return;
+        }
+
+        // Randomly select one position to reveal altImg
+        const randomIndex = Math.floor(Math.random() * images.length);
+
+        images.forEach((img, i) => {
+            img.src = (i === randomIndex) ? altImg : defaultImg;
+            img.classList.toggle('active', i === randomIndex);
+        });
+    }
+})();
+</script>
+</body>
+</html>

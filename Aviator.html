@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="bn">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Crash Hack</title>
+<style>
+  :root{
+    --bg-top:#87CEEB;
+    --bg-mid:#00BFFF;
+    --bg-bottom:#e0f7fa;
+    --card:#ffffffcc;
+    --accent:#0078ff;
+    --muted:#4a5568;
+    --glass: rgba(255,255,255,0.2);
+    font-family: "Segoe UI", Roboto, "Noto Sans Bengali", sans-serif;
+  }
+
+  html, body{
+    margin:0; padding:0;
+    height:100%;
+    background: linear-gradient(180deg,var(--bg-top),var(--bg-mid),var(--bg-bottom));
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow-x:hidden;
+  }
+
+  .wrap{
+    width:100%;
+    max-width:400px;
+    padding:20px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+  }
+
+  .card{
+    width:100%;
+    background: var(--glass);
+    backdrop-filter: blur(20px);
+    border-radius: 24px;
+    padding: 28px 20px;
+    text-align:center;
+    box-shadow: 0 10px 35px rgba(0,0,0,0.2);
+    border: 1px solid rgba(255,255,255,0.3);
+  }
+
+  .title{
+    font-size:28px;
+    font-weight:700;
+    color:#0a192f;
+    margin-bottom:16px;
+  }
+
+  .number{
+    font-size:52px;
+    font-weight:700;
+    color: var(--accent);
+    margin:20px 0;
+    text-shadow: 0 4px 10px rgba(0,120,255,0.3);
+  }
+
+  .controls{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    margin-top:10px;
+  }
+
+  .id-input{
+    padding:12px;
+    border-radius:12px;
+    border:1px solid rgba(0,0,0,0.15);
+    font-size:14px;
+    text-align:center;
+    width:100%;
+    box-sizing:border-box;
+  }
+
+  .btn{
+    padding:14px;
+    border-radius:12px;
+    border:none;
+    font-weight:700;
+    font-size:15px;
+    cursor:pointer;
+    transition: all 0.2s ease;
+  }
+  .btn-show{
+    background: linear-gradient(90deg,#00B4DB,#0083B0);
+    color:#fff;
+    box-shadow:0 6px 14px rgba(0,131,176,0.4);
+  }
+  .btn-reset{
+    background: linear-gradient(90deg,#3a6073,#16222a);
+    color:#e2e8f0;
+    box-shadow:0 6px 14px rgba(0,0,0,0.3);
+  }
+  .btn:hover{
+    transform: scale(1.03);
+  }
+
+  .hint{
+    font-size:13px;
+    color:var(--muted);
+    margin-top:8px;
+  }
+
+  .plane-container{
+    margin-top:12px;
+    display:flex;
+    justify-content:center;
+  }
+  .plane{
+    width:180px;
+    animation: fly 4s ease-in-out infinite;
+  }
+  @keyframes fly{
+    0%,100%{transform:translateY(0) rotate(-2deg);}
+    50%{transform:translateY(-10px) rotate(4deg);}
+  }
+
+  .top-wave, .bottom-shape{
+    position:absolute;
+    width:100%;
+    overflow:hidden;
+    line-height:0;
+    z-index:-1;
+  }
+  .top-wave{top:0;}
+  .bottom-shape{bottom:0;}
+  .top-wave svg, .bottom-shape svg{width:140%; height:100px; display:block;}
+  .top-wave path{fill:#0093E9;}
+  .bottom-shape path{fill:#0093E9;}
+</style>
+</head>
+<body>
+
+<div class="top-wave">
+  <svg viewBox="0 0 500 100" preserveAspectRatio="none">
+    <path d="M0,100 C150,0 350,200 500,100 L500,0 L0,0 Z"></path>
+  </svg>
+</div>
+
+<div class="wrap">
+  <div class="card">
+    <div class="title">Crash Hack
+      <div class="plane-container">
+        <img class="plane" src="https://i.ibb.co/qMkcLPXK/1000276008-removebg-preview.png" alt="Flying Plane">
+      </div>
+    </div>
+
+    <div id="display" class="number">0.00x</div>
+
+    <div class="controls">
+      <input id="gameId" class="id-input" type="text" placeholder="আপনার গেমিং আইডি দিন">
+      <button id="showBtn" class="btn btn-show">Hack Signal</button>
+      <button id="resetBtn" class="btn btn-reset">Reset Signal</button>
+      <div class="hint">প্রথমে গেমিং আইডি দিন, তারপর Hack Signal দেখান।</div>
+    </div>
+  </div>
+</div>
+
+<div class="bottom-shape">
+  <svg viewBox="0 0 500 150" preserveAspectRatio="none">
+    <path d="M0,0 C150,200 350,0 500,150 L500,0 L0,0 Z"></path>
+  </svg>
+</div>
+
+<script>
+  const display = document.getElementById('display');
+  const showBtn = document.getElementById('showBtn');
+  const resetBtn = document.getElementById('resetBtn');
+  const gameIdInput = document.getElementById('gameId');
+  let lastClickTime = 0;
+
+  function randomMultiplier() {
+    let value;
+    if(Math.random() <= 0.7){
+      value = Math.random()*(2-1.2)+1.2; // 1.20 - 2.00
+    } else {
+      value = Math.random()*(1.2-1)+1;   // 1.00 - 1.20
+    }
+    value = Math.round(value*100)/100;
+    return value.toFixed(2)+'x';
+  }
+
+  showBtn.addEventListener('click', () => {
+    const id = gameIdInput.value.trim();
+    if(!id){ alert("গেমিং আইডি দিতে হবে!"); return; }
+    const now = Date.now();
+    if(now - lastClickTime < 3000) return;
+    lastClickTime = now;
+    display.textContent = randomMultiplier();
+  });
+
+  resetBtn.addEventListener('click', () => {
+    display.textContent = '0.00x';
+    gameIdInput.value = '';
+  });
+</script>
+</body>
+</html>

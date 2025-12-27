@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Crash</title>
+
+<style>
+  html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      background: black;
+      overflow: hidden;
+      font-family: "Courier New", monospace;
+      color: #00ff00;
+  }
+
+  #hacker-bg {
+      position: fixed;
+      inset: 0;
+      background: #000;
+      z-index: 0;
+  }
+
+  #hacker-bg .overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 255, 0, 0.05);
+      pointer-events: none;
+  }
+
+  #hacker-bg .scanlines {
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+          to bottom,
+          rgba(0,255,0,0.06),
+          rgba(0,255,0,0.06) 2px,
+          transparent 3px,
+          transparent 5px
+      );
+      mix-blend-mode: overlay;
+      pointer-events: none;
+  }
+
+  .hacker-box {
+      background: rgba(0,255,0,0.12);
+      border: 1px solid #00ff00;
+      box-shadow: 0 0 20px #00ff00;
+      border-radius: 10px;
+      backdrop-filter: blur(3px);
+      color: #00ff00;
+      font-family: "Courier New", monospace;
+      text-align: center;
+      cursor: move;
+      position: fixed;
+      z-index: 999999;
+      min-width: 180px;
+      max-width: 220px;
+      padding: 12px;
+  }
+
+  .hacker-box img {
+      width: 100%;
+      border-radius: 8px;
+      border: 1px solid #00ff00;
+      margin-bottom: 8px;
+      object-fit: cover;
+  }
+
+  .hacker-box button {
+      padding: 6px 10px;
+      font-size: 14px;
+      border: 1px solid #00ff00;
+      border-radius: 6px;
+      background: black;
+      color: #00ff00;
+      cursor: pointer;
+      width: 100%;
+      text-shadow: 0 0 8px #00ff00;
+  }
+
+  .hacker-box div {
+      margin-top: 8px;
+      font-size: 13px;
+      color: #00ff00;
+  }
+</style>
+</head>
+<body>
+
+<div id="hacker-bg">
+    <div class="overlay"></div>
+    <div class="scanlines"></div>
+</div>
+
+<script>
+window.onload = () => {
+    initModMenu();
+};
+
+function initModMenu() {
+  const modMenu = document.createElement("div");
+  modMenu.className = "hacker-box";
+  modMenu.style.top = "20px";
+  modMenu.style.right = "20px";
+
+  const userImage = document.createElement("img");
+  userImage.src = "https://i.imgur.com/MpE5enO.png";
+
+  const clickButton = document.createElement("button");
+  clickButton.innerText = "Start Hack";
+
+  const messageBox = document.createElement("div");
+  messageBox.innerText = "Initializing…";
+
+  let isRunning = false;
+  let signalCount = 0;
+
+  function generateControlledCrashX() {
+    signalCount++;
+    if (signalCount <= 5) {
+      return parseFloat((Math.random() * (1.30 - 1.10) + 1.10).toFixed(2));
+    } else {
+      const min = 1.30;
+      const max = 2.00;
+      let x = Math.random() * (max - min) + min;
+      if (Math.random() < 0.5) x = Math.random() * (1.70 - min) + min;
+      return parseFloat(x.toFixed(2));
+    }
+  }
+
+  function showOneSignal() {
+    if (!isRunning) {
+      messageBox.innerText = "❌ Hack Stopped.";
+      return;
+    }
+    const crashX = generateControlledCrashX();
+    messageBox.innerText = `🚀 Started at 1.00x`;
+
+    setTimeout(() => {
+      messageBox.innerText = `💥 Crash at ${crashX.toFixed(2)}x`;
+    }, Math.min(Math.floor(2000 * Math.log(crashX)), 1500));
+  }
+
+  clickButton.onclick = () => {
+    if (!isRunning) {
+      isRunning = true;
+      signalCount = 0;
+      clickButton.innerText = "Show Signal";
+      messageBox.innerText = "⚡ Hack Running...";
+    } else showOneSignal();
+  };
+
+  clickButton.oncontextmenu = (e) => {
+    e.preventDefault();
+    isRunning = false;
+    clickButton.innerText = "Start Hack";
+    messageBox.innerText = "🛑 Hack Stopped.";
+  };
+
+  let isDragging = false;
+  let offsetX = 0, offsetY = 0;
+
+  function startDrag(x, y) {
+    isDragging = true;
+    const rect = modMenu.getBoundingClientRect();
+    offsetX = x - rect.left;
+    offsetY = y - rect.top;
+  }
+
+  function onDrag(x, y) {
+    if (!isDragging) return;
+    modMenu.style.left = `${x - offsetX}px`;
+    modMenu.style.top = `${y - offsetY}px`;
+    modMenu.style.right = "auto";
+  }
+
+  function stopDrag() {
+    isDragging = false;
+  }
+
+  modMenu.addEventListener("mousedown", (e) => startDrag(e.clientX, e.clientY));
+  document.addEventListener("mousemove", (e) => onDrag(e.clientX, e.clientY));
+  document.addEventListener("mouseup", stopDrag);
+
+  modMenu.addEventListener("touchstart", (e) => {
+    const t = e.touches[0];
+    if (!t.target.closest("button")) {
+      e.preventDefault();
+      startDrag(t.clientX, t.clientY);
+    }
+  }, { passive: false });
+
+  document.addEventListener("touchmove", (e) => {
+    if (!isDragging) return;
+    const t = e.touches[0];
+    e.preventDefault();
+    onDrag(t.clientX, t.clientY);
+  }, { passive: false });
+
+  document.addEventListener("touchend", stopDrag);
+
+  modMenu.appendChild(userImage);
+  modMenu.appendChild(clickButton);
+  modMenu.appendChild(messageBox);
+  document.body.appendChild(modMenu);
+}
+</script>
+
+</body>
+</html>
